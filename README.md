@@ -1,0 +1,9 @@
+# Motivation
+
+Alpine wildflowers are an integral part of montane ecosystems; they provide a wide variety of ecosystem services like pollination and nutrient recycling.
+To understand the effects of climate change on these vulnerable wildflowers, records of various stages of development are required: MeadoWatch is one of the citizen science initiatives run by Janneke Hille Ris Lambers (JHRL) lab at UW that has spearheaded the effort of documenting stages for the past 8 years. Volunteers visit the sites along two popular trails on the south and east side of Mt. Rainier from bud break to post flowering. The program has so far been successful in raising awareness of climate change on wildflowers and being a natural history conduit to staff at Mt. Rainier National Park.
+
+At the beginning of 2020, a related initiative was started whereby field images of meadow flowers were captured alongside hyperspectral imagery from hoisted drones. The goal of this project is to improve remotely sensed phenology detection of these meadows, and secondly to complement citizen science observations by capturing finer spectral signatures of meadow flowers such that it can be then cross-evaluated with imagery from satellite providers (e.g., Planet, Sentinel-2 and Landsat 8). However, to understand and derive field observed spectral signatures, there is a need to delineate and demarcate flowers from heterogeneous backgrounds (e.g., trees, leaves, soil, rocks, etc.). 
+
+# Plan
+We plan to delineate meadow flowers from complex backgrounds like rocks, soil and leaves using Convolutional Neural Nets (CNN) as they have shown promising results on ImageNet-based datasets. The results would assist in better prediction of wildflower season which can complement citizen science efforts and park visitor management.
