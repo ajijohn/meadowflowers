@@ -1,0 +1,91 @@
+---
+title: "analysis"
+author: "Aji John"
+date: "2/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+
+```{r }
+library(tidyverse)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r , echo=FALSE}
+predictions_yolo <- read_csv('./data/results_yolo.csv')
+exif_data <- read_csv('./data/exif-aug2020.csv')
+```
+
+```{r , echo=FALSE}
+library(readr)
+results_yolo <- read_csv("data/results_yolo.csv", 
+    col_names = FALSE)
+results_yolo$filename <- substr(results_yolo$X1,13,100)
+write_csv(results_yolo,file = 'data/results_yolo.csv')
+View(results_yolo)
+```
+
+
+```{r , echo=FALSE}
+library(readr)
+results_revised <- read_csv("data/results_yolo.csv", 
+    col_names = TRUE)
+filtered_columns <- results_revised %>% select ('X2','X3','X4','X5','X6','X7','X8','filename') %>% as.data.frame()
+```
+
+```{r , echo=FALSE}
+filtered_longer <- filtered_columns %>%
+  pivot_longer(!filename, names_to = "species", values_to = "species_name")  %>% as.data.frame()
+```  
+  
+  
+```{r , echo=FALSE}
+key_file_count <- filtered_longer %>% filter(!str_detect(species_name, "Done.")) %>% group_by(filename) %>% count() %>% as.data.frame()
+colnames(key_file_count) <- c('file_name','count')
+```  
+
+
+```{r , echo=FALSE}
+new_file <- merge(exif_data, key_file_count, by="file_name")
+```  
+
+```{r , echo=FALSE}
+new_file %>% ggplot() + geom_point(aes(gps_altitude,count))  + theme_minimal(base_size = 24) +
+  labs(x='Altitude (m)' , y="Number of species")
+   
+``` 
+```{r , echo=FALSE}
+new_file %>% ggplot(aes(x = gps_altitude, y = count, label = count)) +
+  geom_bar(stat = "identity") +
+  geom_text(size = 3, position = position_stack(vjust = 0.5))
+``` 
+
+```{r , echo=FALSE}
+library(plotly)
+new_file %>% ggplot() + geom_point(aes(gps_altitude,count))  + theme_minimal(base_size = 24) +
+  labs(x='Altitude (m)' , y="Number of species")
+   ggplotly()
+``` 
+
+# 
+```{r , echo=FALSE}
+new_file %>% ggplot() + geom_smooth(span = 0.65,aes(gps_altitude,count))  + theme_minimal(base_size = 24) +
+  labs(x='Altitude (m)' , y="Count")
+   
+```  
+
+```{r , echo=FALSE}
+new_file %>% mutate(dt = lubridate::as_date(datetime), ele= round(new_file$gps_altitude)) %>% 
+  ggplot() + geom_point(span = 0.65,aes(dt,count,color=as.factor(ele)))  + theme_minimal(base_size = 24) +
+  labs(x='Altitude (m)' , y="Count",color=NULL)
+   
+```  
