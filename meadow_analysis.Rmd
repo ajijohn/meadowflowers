@@ -53,14 +53,41 @@ key_file_count <- filtered_longer %>% filter(!str_detect(species_name, "Done."))
 colnames(key_file_count) <- c('file_name','count')
 ```  
 
+```{r , echo=FALSE}
+species_file_count <- filtered_longer %>% filter(!str_detect(species_name, "Done.")) %>% group_by(filename)  %>% as.data.frame()
+colnames(species_file_count) <- c('file_name','species',"species_name")
+```  
 
+```{r , echo=FALSE}
+new_file_species <- merge(exif_data, species_file_count, by="file_name")
+```  
+
+```{r , echo=FALSE}
+new_file_species_df <- new_file_species %>% 
+  separate(species_name, c("species_abund","sp1","sp2"), sep = "\\s+") %>%
+  mutate(species_nname = paste(sp1,sp2),noofsp=as.numeric(species_abund)) %>% as.data.frame()
+```  
+
+```{r , echo=FALSE}
+ggplot(new_file_species_df, aes(gps_altitude, noofsp)) + geom_bar(aes(fill = species_nname), 
+                                              width = 0.4, position = position_dodge(width=0.5), stat="identity") +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 18) +
+   labs(x='Altitude (m)' , y="Number of species",fill="Species name") +
+  theme(legend.position = "bottom")
+  ggsave("figs/species-distribution.png",  width = 35, height = 25, units = "cm")
+```  
+
+          
 ```{r , echo=FALSE}
 new_file <- merge(exif_data, key_file_count, by="file_name")
 ```  
 
 ```{r , echo=FALSE}
 new_file %>% ggplot() + geom_point(aes(gps_altitude,count))  + theme_minimal(base_size = 24) +
-  labs(x='Altitude (m)' , y="Number of species")
+  labs(x='Altitude (m)' , y="Number of species") +
+  theme_minimal()
    
 ``` 
 ```{r , echo=FALSE}
@@ -75,17 +102,34 @@ new_file %>% ggplot() + geom_point(aes(gps_altitude,count))  + theme_minimal(bas
   labs(x='Altitude (m)' , y="Number of species")
    ggplotly()
 ``` 
+```{r , echo=FALSE}
+library(plotly)
+new_file %>% 
+  ggplot() + geom_point(aes(gps_altitude,count))  + theme_minimal(base_size = 24) +
+  labs(x='Altitude (m)' , y="Number of species")
+   #ggplotly()
+``` 
 
 # 
 ```{r , echo=FALSE}
-new_file %>% ggplot() + geom_smooth(span = 0.65,aes(gps_altitude,count))  + theme_minimal(base_size = 24) +
-  labs(x='Altitude (m)' , y="Count")
-   
+new_file %>% ggplot() + 
+  geom_smooth(span = 0.65,aes(gps_altitude,count))  + theme_minimal(base_size = 24) +
+  labs(x='Altitude (m)' , y="Number of species")
+   ggsave("figs/number-species-smoothed.png",  width = 30, height = 20, units = "cm")
 ```  
 
 ```{r , echo=FALSE}
 new_file %>% mutate(dt = lubridate::as_date(datetime), ele= round(new_file$gps_altitude)) %>% 
   ggplot() + geom_point(span = 0.65,aes(dt,count,color=as.factor(ele)))  + theme_minimal(base_size = 24) +
+  theme(legend.position = "bottom") +
+  labs(x='Altitude (m)' , y="Count",color=NULL)
+   
+```  
+
+
+```{r , echo=FALSE}
+new_file %>% mutate(dt = lubridate::as_date(datetime), ele= round(new_file$gps_altitude)) %>% 
+  ggplot() + geom_point(span = 0.65,aes(dt,count))  + theme_minimal(base_size = 24) +
   labs(x='Altitude (m)' , y="Count",color=NULL)
    
 ```  
