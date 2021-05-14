@@ -1,0 +1,247 @@
+{
+  "Product": "MeadoWatch",
+  "Company": "DotMote Labs",
+  "version": 1,
+  "ReleaseDate": "2021-05-14T00:00:00.000Z",
+  "Demo": false,
+  "Elevation_Units": "meters",
+  "GPS_Projection": "WGS84",
+  "Trails": [
+    {
+      "name": "Reflections Lake",
+      "isMeadowWatch": true,
+      "Plots": [
+        {
+          "name": "Plot 1",
+          "Elevation": 1496,
+          "GPS": {
+            "latitude": 46.77011,
+            "longitude": -121.72317
+          }
+        },
+        {
+          "name": "Plot 2",
+          "Elevation": 1540,
+          "GPS": {
+            "latitude": 46.77334,
+            "longitude": -121.72337
+          }
+        },
+        {
+          "name": "Plot 3",
+          "Elevation": 1605,
+          "GPS": {
+            "latitude": 46.77499,
+            "longitude": -121.71969
+          }
+        },
+        {
+          "name": "Plot 4",
+          "Elevation": 1612,
+          "GPS": {
+            "latitude": 46.77573,
+            "longitude": -121.72025
+          }
+        },
+        {
+          "name": "Plot 5",
+          "Elevation": 1650,
+          "GPS": {
+            "latitude": 46.777801,
+            "longitude": -121.721638
+          }
+        },
+        {
+          "name": "Plot 6",
+          "Elevation": 1680,
+          "GPS": {
+            "latitude": 46.7817,
+            "longitude": -121.71968
+          }
+        },
+        {
+          "name": "Plot 7",
+          "Elevation": 1711,
+          "GPS": {
+            "latitude": 46.78403,
+            "longitude": -121.72019
+          }
+        },
+        {
+          "name": "Plot 8",
+          "Elevation": 1745,
+          "GPS": {
+            "latitude": 46.78736,
+            "longitude": -121.71936
+          }
+        },
+        {
+          "name": "Plot 9",
+          "Elevation": 1805,
+          "GPS": {
+            "latitude": 46.7919,
+            "longitude": -121.71693
+          }
+        },
+        {
+          "name": "Plot 10",
+          "Elevation": 1840,
+          "GPS": {
+            "latitude": 46.79403,
+            "longitude": -121.71604
+          }
+        },
+        {
+          "name": "Plot 11",
+          "Elevation": 1880,
+          "GPS": {
+            "latitude": 46.79654,
+            "longitude": -121.71194
+          }
+        }
+      ]
+    },
+    {
+      "name": "Glacier Basin",
+      "isMeadowWatch": true,
+      "Plots": [
+        {
+          "name": "Plot 1",
+          "Elevation": 1483,
+          "GPS": {
+            "latitude": 46.9,
+            "longitude": -121.66604
+          }
+        },
+        {
+          "name": "Plot 2",
+          "Elevation": 1469,
+          "GPS": {
+            "latitude": 46.89985,
+            "longitude": -121.66798
+          }
+        },
+        {
+          "name": "Plot 3",
+          "Elevation": 1500,
+          "GPS": {
+            "latitude": 46.8995,
+            "longitude": -121.67163
+          }
+        },
+        {
+          "name": "Plot 4",
+          "Elevation": 1547,
+          "GPS": {
+            "latitude": 46.89704,
+            "longitude": -121.67803
+          }
+        },
+        {
+          "name": "Plot 5",
+          "Elevation": 1613,
+          "GPS": {
+            "latitude": 46.89661,
+            "longitude": -121.6815
+          }
+        },
+        {
+          "name": "Plot 6",
+          "Elevation": 1582,
+          "GPS": {
+            "latitude": 46.89685,
+            "longitude": -121.68232
+          }
+        },
+        {
+          "name": "Plot 7",
+          "Elevation": 1600,
+          "GPS": {
+            "latitude": 46.89693,
+            "longitude": -121.68362
+          }
+        },
+        {
+          "name": "Plot 8",
+          "Elevation": 1647,
+          "GPS": {
+            "latitude": 46.89612,
+            "longitude": -121.68729
+          }
+        },
+        {
+          "name": "Plot 9",
+          "Elevation": 1713,
+          "GPS": {
+            "latitude": 46.89431,
+            "longitude": -121.69288
+          }
+        },
+        {
+          "name": "Plot 10",
+          "Elevation": 1748,
+          "GPS": {
+            "latitude": 46.89297,
+            "longitude": -121.6964
+          }
+        },
+        {
+          "name": "Plot 11",
+          "Elevation": 1766,
+          "GPS": {
+            "latitude": 46.89089,
+            "longitude": -121.69839
+          }
+        },
+        {
+          "name": "Plot 12",
+          "Elevation": 1776,
+          "GPS": {
+            "latitude": 46.89051,
+            "longitude": -121.6987
+          }
+        },
+        {
+          "name": "Plot 13",
+          "Elevation": 1775,
+          "GPS": {
+            "latitude": 46.88998,
+            "longitude": -121.69927
+          }
+        },
+        {
+          "name": "Plot 14",
+          "Elevation": 1804,
+          "GPS": {
+            "latitude": 46.88932,
+            "longitude": -121.70019
+          }
+        },
+        {
+          "name": "Plot 15",
+          "Elevation": 1823,
+          "GPS": {
+            "latitude": 46.88959,
+            "longitude": -121.70039
+          }
+        },
+        {
+          "name": "Plot 16",
+          "Elevation": 1810,
+          "GPS": {
+            "latitude": 46.88874,
+            "longitude": -121.702
+          }
+        },
+        {
+          "name": "Plot 17",
+          "Elevation": 1831,
+          "GPS": {
+            "latitude": 46.88844,
+            "longitude": -121.70431
+          }
+        }
+      ]
+    }
+  ]
+}

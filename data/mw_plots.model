@@ -1,0 +1,218 @@
+// Model & generate Live JSON data values
+// interactively using a simple syntax.
+// String is the default value type
+Product = MeadoWatch 
+Company = DotMote Labs
+
+// Number, Date & Boolean are also supported
+// Specify types after property names
+version n = 1.0
+ReleaseDate d = 2021-05-14
+Demo b = false
+Elevation_Units = meters
+GPS_Projection = WGS84
+
+// Use [n] to define object arrays
+Trails[0]
+   name s = Reflections Lake
+   isMeadowWatch b = true  
+
+   Plots[0]
+    name s = Plot 1
+    Elevation n = 1496
+    GPS
+      latitude n = 46.77011
+      longitude n =  -121.72317 
+
+  Plots[1]
+    name s = Plot 2
+    Elevation n = 1540
+    GPS
+      latitude n = 46.77334
+      longitude n =  -121.72337
+
+  Plots[2]
+    name s = Plot 3
+    Elevation n = 1605
+    GPS
+      latitude n = 46.77499
+      longitude n =  -121.71969
+
+  Plots[3]
+    name s = Plot 4
+    Elevation n = 1612
+    GPS
+      latitude n = 46.77573
+      longitude n =  -121.72025
+
+  Plots[4]
+    name s = Plot 5
+    Elevation n = 1650
+    GPS
+      latitude n = 46.777801
+      longitude n =  -121.721638
+
+  Plots[5]
+    name s = Plot 6
+    Elevation n = 1680
+    GPS
+      latitude n = 46.7817
+      longitude n =  -121.71968
+
+  Plots[6]
+    name s = Plot 7
+    Elevation n = 1711
+    GPS
+      latitude n = 46.78403
+      longitude n =  -121.72019
+
+  Plots[7]
+    name s = Plot 8
+    Elevation n = 1745
+    GPS
+      latitude n = 46.78736
+      longitude n =  -121.71936
+
+  Plots[8]
+    name s = Plot 9
+    Elevation n = 1805
+    GPS
+      latitude n = 46.7919
+      longitude n =  -121.71693
+
+  Plots[9]
+    name s = Plot 10
+    Elevation n = 1840
+    GPS
+      latitude n = 46.79403
+      longitude n =  -121.71604
+
+  Plots[10]
+    name s = Plot 11
+    Elevation n = 1880
+    GPS
+      latitude n = 46.79654
+      longitude n =  -121.71194
+
+Trails[1]
+   name s = Glacier Basin
+   isMeadowWatch b = true
+   Plots[0]
+    name s = Plot 1
+    Elevation n = 1483
+    GPS
+      latitude n = 46.9
+      longitude n =  -121.66604
+
+  Plots[1]
+    name s = Plot 2
+    Elevation n = 1469
+    GPS
+      latitude n = 46.89985
+      longitude n =  -121.66798
+
+  Plots[2]
+    name s = Plot 3
+    Elevation n = 1500
+    GPS
+      latitude n = 46.8995
+      longitude n =  -121.67163
+
+  Plots[3]
+    name s = Plot 4
+    Elevation n = 1547
+    GPS
+      latitude n = 46.89704
+      longitude n =  -121.67803
+
+  Plots[4]
+    name s = Plot 5
+    Elevation n = 1613
+    GPS
+      latitude n = 46.89661
+      longitude n =  -121.6815
+
+  Plots[5]
+    name s = Plot 6
+    Elevation n = 1582
+    GPS
+      latitude n = 46.89685
+      longitude n =  -121.68232
+
+  Plots[6]
+    name s = Plot 7
+    Elevation n = 1600
+    GPS
+      latitude n = 46.89693
+      longitude n =  -121.68362
+
+  Plots[7]
+    name s = Plot 8
+    Elevation n = 1647
+    GPS
+      latitude n = 46.89612
+      longitude n =  -121.68729
+
+  Plots[8]
+    name s = Plot 9
+    Elevation n = 1713
+    GPS
+      latitude n = 46.89431
+      longitude n =  -121.69288
+
+  Plots[9]
+    name s = Plot 10
+    Elevation n = 1748
+    GPS
+      latitude n = 46.89297
+      longitude n =  -121.6964
+
+  Plots[10]
+    name s = Plot 11
+    Elevation n = 1766
+    GPS
+      latitude n = 46.89089
+      longitude n =  -121.69839
+
+  Plots[11]
+    name s = Plot 12
+    Elevation n = 1776
+    GPS
+      latitude n = 46.89051
+      longitude n =  -121.6987
+
+  Plots[12]
+    name s = Plot 13
+    Elevation n = 1775
+    GPS
+      latitude n = 46.88998
+      longitude n =  -121.69927
+
+  Plots[13]
+    name s = Plot 14
+    Elevation n = 1804
+    GPS
+      latitude n = 46.88932
+      longitude n =  -121.70019
+
+  Plots[14]
+    name s = Plot 15
+    Elevation n = 1823
+    GPS
+      latitude n = 46.88959
+      longitude n =  -121.70039
+
+  Plots[15]
+    name s = Plot 16
+    Elevation n = 1810
+    GPS
+      latitude n = 46.88874
+      longitude n =  -121.702
+
+  Plots[16]
+    name s = Plot 17
+    Elevation n = 1831
+    GPS
+      latitude n = 46.88844
+      longitude n =  -121.70431
+
