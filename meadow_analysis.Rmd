@@ -79,7 +79,19 @@ ggplot(new_file_species_df, aes(gps_altitude, noofsp)) + geom_bar(aes(fill = spe
   ggsave("figs/species-distribution.png",  width = 35, height = 25, units = "cm")
 ```  
 
-          
+```{r , echo=FALSE}
+ggplot(new_file_species_df, aes(gps_altitude, noofsp)) + 
+  geom_bar(aes(fill = species_nname), 
+                                              width = 1, position = position_dodge(width=0.5), stat="identity") +
+  geom_point(aes(color=species_nname))+
+    theme(legend.position="top", legend.title = "",
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 18) +
+   labs(x='Altitude (m)' , y="Number of detected species",fill="", color="") +
+  theme(legend.position = "bottom")
+  ggsave("figs/species-distribution-smoothed.png",  width = 35, height = 25, units = "cm")
+```  
+
 ```{r , echo=FALSE}
 new_file <- merge(exif_data, key_file_count, by="file_name")
 ```  
@@ -113,8 +125,9 @@ new_file %>%
 # 
 ```{r , echo=FALSE}
 new_file %>% ggplot() + 
-  geom_smooth(span = 0.65,aes(gps_altitude,count))  + theme_minimal(base_size = 24) +
-  labs(x='Altitude (m)' , y="Number of species")
+  geom_smooth(span = 0.5,aes(gps_altitude,count))  + theme_minimal(base_size = 24) +
+  labs(x='Altitude (m)' , y="Number of species")+
+  ggpubr::theme_cleveland()
    ggsave("figs/number-species-smoothed.png",  width = 30, height = 20, units = "cm")
 ```  
 

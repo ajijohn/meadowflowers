@@ -1,0 +1,95 @@
+---
+title: "R Notebook to get lat/long"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+library(tidyverse)
+datafol <- read_csv('./data/exif-aug2020-cleaned.csv')
+#datafol %>% write_csv('./data/exif_aug2020-temp.csv')
+colsites2020 <- datafol %>% 
+#  mutate_each(funs(as.numeric)) %>%
+  transmute(lat_dec=gps_latitude_d + gps_latitude_m/60 + gps_latitude_s/60^2,
+            long_dec=(gps_longitude_d + gps_longitude_m/60 + gps_longitude_s/60^2) * -1) %>% as.data.frame()
+```
+
+```{r}
+library(sp)
+library(sf)
+xy <- cbind(x=colsites2020$long_dec , 
+            y=colsites2020$lat_dec)
+S <- SpatialPoints(xy)
+meadowSites <- bbox(S)
+meadowSites
+```
+
+```{r}
+library(ceramic)
+
+roi <- raster::extent(-121.73088,-121.71093,46.77072 , 46.79736)
+im <- cc_location(roi,buffer = 500)
+#> Preparing to download: 16 tiles at zoom = 4 from 
+#> https://api.mapbox.com/v4/mapbox.satellite/
+
+raster::plotRGB(im)
+
+crs<-"+proj=longlat +datum=WGS84"
+
+# Project Raster
+projected_raster_ms <- raster::projectRaster(im, crs = crs)
+
+```
+
+```{r}
+library(raster)
+library(ggplot2)
+library(ggthemes)
+
+mydata <- getData("GADM", country = "USA", level = 1)
+mymap <- fortify(mydata)
+
+g1 <-  ggplot() +
+       geom_blank(data = mymap, aes(x = long, y = lat)) +
+       geom_map(data = mymap, map = mymap,
+                 aes(group = group, map_id = id),
+                 fill = "#b2b2b2", color = "black", size = 0.3) +
+ #[-124.733643,45.543831,-116.916161,49.002405] WA state
+       scale_x_continuous(limits = c(-124.733643, -116.916161), expand = c(0, 0)) +
+       scale_y_continuous(limits = c(45.543831, 49.002405), expand = c(0, 0)) +
+       theme_map()
+
+#s1 -121.73113 -121.71071
+#s2   46.77049   46.79759
+temp <- data.frame(long = c(-121.73113, -121.73113,-121.71071,-121.71071, -121.73113),
+                   lat = c(46.77049, 46.79759, 46.79759, 46.77049, 46.77049))
+insetMS <- ggplotGrob(g1 + geom_path(data = temp, aes(x = long, y = lat), color="blue", size = 5) +  coord_map("polyconic") +
+      theme_map() +
+      theme(panel.background = element_rect(fill = 'white')))
+  
+
+```
+
+```{r}
+library(rasterVis)
+library(RStoolbox)
+library(tidyverse)
+library(ggspatial)
+ggRGB(projected_raster_ms, r=1,g=2, b=3)  +  
+   geom_spatial_point(data=colsites2020, aes(long_dec,lat_dec,color='red')) +
+    coord_sf(crs = 4326)   +
+theme(panel.background = element_rect(colour = "black", fill="white"),
+      axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "bottom") +
+ggspatial::annotation_scale(  pad_x = unit(0.5, "mm"),pad_y = unit(0.5, "mm"),location = "bl", width_hint = 0.5)+
+     ggspatial::annotation_north_arrow(location = "lr", which_north = "true", 
+     pad_x = unit(0.5, "mm"),pad_y = unit(0.5, "mm"),style = ggspatial::north_arrow_fancy_orienteering) +
+  labs(x="",y="", color="") +
+  scale_color_manual(values = c('red'),labels=c("sites")) +
+  annotation_custom(grob = insetMS, xmin = -121.73113, xmax = -121.7211,
+                        ymin = 46.792, ymax = 46.797)
+ggsave("figs/meadow_sites.png",dpi=300, dev='png',  height=8, width=8,units="in")
+        
+```
