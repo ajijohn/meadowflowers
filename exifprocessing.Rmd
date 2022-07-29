@@ -31,7 +31,9 @@ meadowSites
 library(ceramic)
 
 roi <- raster::extent(-121.73088,-121.71093,46.77072 , 46.79736)
-im <- cc_location(roi,buffer = 500)
+#im <- cc_location(roi,buffer = 5000)
+im <- cc_location(roi,buffer = 1e12)
+
 #> Preparing to download: 16 tiles at zoom = 4 from 
 #> https://api.mapbox.com/v4/mapbox.satellite/
 

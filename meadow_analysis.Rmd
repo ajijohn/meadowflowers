@@ -31,7 +31,7 @@ results_yolo <- read_csv("data/results_yolo.csv",
     col_names = FALSE)
 results_yolo$filename <- substr(results_yolo$X1,13,100)
 write_csv(results_yolo,file = 'data/results_yolo.csv')
-View(results_yolo)
+#View(results_yolo)
 ```
 
 
@@ -39,7 +39,7 @@ View(results_yolo)
 library(readr)
 results_revised <- read_csv("data/results_yolo.csv", 
     col_names = TRUE)
-filtered_columns <- results_revised %>% select ('X2','X3','X4','X5','X6','X7','X8','filename') %>% as.data.frame()
+filtered_columns <- results_revised %>% dplyr::select ('X2','X3','X4','X5','X6','X7','X8','filename') %>% as.data.frame()
 ```
 
 ```{r , echo=FALSE}
@@ -66,6 +66,139 @@ new_file_species <- merge(exif_data, species_file_count, by="file_name")
 new_file_species_df <- new_file_species %>% 
   separate(species_name, c("species_abund","sp1","sp2"), sep = "\\s+") %>%
   mutate(species_nname = paste(sp1,sp2),noofsp=as.numeric(species_abund)) %>% as.data.frame()
+```  
+Number of flower
+```{r , echo=FALSE}
+new_file_species_df %>% group_by(file_name, gps_altitude) %>% summarise (nos=n()) %>%ggplot(aes(gps_altitude, nos)) + geom_point() +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 18) +
+   labs(x='Elevation (m)' , y="# Flower species / photo",fill="Species name") +
+  theme(legend.position = "bottom")
+
+nofflo <- new_file_species_df %>% group_by(file_name, gps_altitude) %>% summarise (nos=n()) %>%ggplot(aes(gps_altitude, nos)) + geom_point() +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 24) +
+   labs(x='Elevation (m)' , y="# Flower species / photo",fill="Species name") +
+  theme(legend.position = "bottom")
+
+
+```  
+
+
+```{r , echo=FALSE}
+ new_file_species_mod_df <- new_file_species_df
+
+#  [1] "American Bistorts"    "Bracted Louseworts"  
+# [3] "Magenta Paintbrushs"  "Mountain Daisys"     
+# [5] "Sitka Valerians"      "Subalpine Lupines"   
+# [7] "Western Anemone"      "Western Anemones"    
+# [9] "Mountain Daisy"       "Sitka Valerian"      
+# [11] "American Bistort"     "Subalpine Lupine"    
+# [13] "Cascade Asters"       "Broadleaf Arnica"    
+# [15] "Sharptooth Angelica"  "North Mircoseris"    
+# [17] "Grays Lovage"         "Grays Lovages"       
+# [19] "Magenta Paintbrush"   "Bracted Lousewort"   
+# [21] "Broadleaf Arnicas"    "Cascade Aster"       
+# [23] "Sharptooth Angelicas" "North Mircoseriss"
+
+# update the names 
+new_file_species_mod_df[new_file_species_mod_df$species_nname=='American Bistorts',]$species_nname<- 'American Bistort'
+new_file_species_mod_df[new_file_species_mod_df$species_nname=='Magenta Paintbrushs',]$species_nname<- 'Magenta Paintbrush'
+new_file_species_mod_df[new_file_species_mod_df$species_nname=='Sitka Valerians',]$species_nname<- 'Sitka Valerian'
+new_file_species_mod_df[new_file_species_mod_df$species_nname=='Cascade Asters',]$species_nname<- 'Cascade Aster'
+new_file_species_mod_df[new_file_species_mod_df$species_nname=='Broadleaf Arnicas',]$species_nname<- 'Broadleaf Arnica'
+new_file_species_mod_df[new_file_species_mod_df$species_nname=='Sharptooth Angelicas',]$species_nname<- 'Sharptooth Angelica'
+new_file_species_mod_df[new_file_species_mod_df$species_nname=='Bracted Louseworts',]$species_nname<- 'Bracted Lousewort'
+new_file_species_mod_df[new_file_species_mod_df$species_nname=='Mountain Daisys',]$species_nname<- 'Mountain Daisy'
+new_file_species_mod_df[new_file_species_mod_df$species_nname=='Western Anemones',]$species_nname<- 'Western Anemone'
+new_file_species_mod_df[new_file_species_mod_df$species_nname=='North Mircoseriss',]$species_nname<- 'North Mircoseris'
+new_file_species_mod_df[new_file_species_mod_df$species_nname=='Grays Lovages',]$species_nname<- 'Grays Lovage'
+new_file_species_mod_df[new_file_species_mod_df$species_nname=='Subalpine Lupines',]$species_nname<- 'Subalpine Lupine'
+
+
+
+
+
+
+
+
+
+
+``` 
+flowering  densities
+
+```{r , echo=FALSE}
+new_file_species_mod_df %>% group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname)) +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 18) +
+   labs(x='Elevation (m)' , y="Flower density / photo",color="Species") +
+  theme(legend.position = "bottom")
+
+fd  <- new_file_species_mod_df %>% group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname)) +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 24) +
+   labs(x='Elevation (m)' , y="Flower density / photo",color="Species") +
+  theme(legend.position = "bottom")
+
+ggsave("figs/species-density.png",  width = 35, height = 25, units = "cm")
+``` 
+
+```{r }
+library(patchwork)
+(nofflo  | fd)+ plot_layout(guides = 'collect')+
+  plot_annotation(tag_levels = 'A')  &
+  theme(legend.position='bottom')
+
+ggsave("figs/combineflowerprese.jpg", width = 40, height = 20, units = "cm")
+
+```
+
+Add  temporal 
+
+
+lubridate::as_datetime(new_file_species_mod_df$datetime,format='%Y:%m:%d %H:%M:%S')
+
+```{r , echo=FALSE}
+daylabel  <- c("23"="August 23","27"="August 27", "30"="August 30")
+new_file_species_mod_df %>% mutate(dt= lubridate::as_datetime(datetime,format='%Y:%m:%d %H:%M:%S') ) %>%
+  mutate(mnth= lubridate::month(dt),day= lubridate::day(dt)) %>%
+  group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname)) +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 24) +
+  facet_grid(.~day,labeller = labeller(day=daylabel))+
+   labs(x='Elevation (m)' , y="Flower density / photo",color="Species") +
+  theme(legend.position = "bottom")
+ggsave("figs/species-densitytemporal.png",  width = 35, height = 25, units = "cm")
+``` 
+
+
+flowering  densities
+
+```{r , echo=FALSE}
+new_file_species_df %>% group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname)) +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 18) +
+   labs(x='Elevation (m)' , y="Flower density / photo",fill="Species name") +
+  theme(legend.position = "bottom")
+
+
+``` 
+
+
+```{r , echo=FALSE}
+ggplot(new_file_species_df, aes(gps_altitude, noofsp)) + geom_point() +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 18) +
+   labs(x='Elevation (m)' , y="Number of species per picture",fill="Species name") +
+  theme(legend.position = "bottom")
+
 ```  
 
 ```{r , echo=FALSE}
@@ -129,6 +262,18 @@ new_file %>% ggplot() +
   labs(x='Altitude (m)' , y="Number of species")+
   ggpubr::theme_cleveland()
    ggsave("figs/number-species-smoothed.png",  width = 30, height = 20, units = "cm")
+```  
+
+```{r , echo=FALSE}
+
+summary(lm(data=new_file,formula = count~gps_altitude))
+
+new_file %>% ggplot() + 
+  geom_point(aes(gps_altitude,count)) +
+  geom_smooth(method = "lm",span = 0.5,aes(gps_altitude,count))  + theme_minimal(base_size = 24) +
+  labs(x='Altitude (m)' , y="Number of species")+
+  ggpubr::theme_cleveland()
+   ggsave("figs/number-species-smoothed-lm.png",  width = 30, height = 20, units = "cm")
 ```  
 
 ```{r , echo=FALSE}
