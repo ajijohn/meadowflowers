@@ -32,7 +32,7 @@ library(ceramic)
 
 roi <- raster::extent(-121.73088,-121.71093,46.77072 , 46.79736)
 #im <- cc_location(roi,buffer = 5000)
-im <- cc_location(roi,buffer = 1e12)
+im <- cc_location(roi,buffer = 1e11)
 
 #> Preparing to download: 16 tiles at zoom = 4 from 
 #> https://api.mapbox.com/v4/mapbox.satellite/
@@ -68,11 +68,47 @@ g1 <-  ggplot() +
 #s2   46.77049   46.79759
 temp <- data.frame(long = c(-121.73113, -121.73113,-121.71071,-121.71071, -121.73113),
                    lat = c(46.77049, 46.79759, 46.79759, 46.77049, 46.77049))
-insetMS <- ggplotGrob(g1 + geom_path(data = temp, aes(x = long, y = lat), color="blue", size = 5) +  coord_map("polyconic") +
+
+# [
+#               -121.9696572753912,
+#               47.01151109725859
+#             ],
+#             [
+#               -121.9696572753912,
+#               46.708203618730494
+#             ],
+#             [
+#               -121.50960478515694,
+#               46.708203618730494
+#             ],
+#             [
+#               -121.50960478515694,
+#               47.01151109725859
+#             ],
+#             [
+#               -121.9696572753912,
+#               47.01151109725859
+#             ]
+
+tempy <- data.frame(long = c(  -121.9696572753912, 
+                               -121.9696572753912,
+                               -121.50960478515694,
+                               -121.50960478515694,
+                                -121.9696572753912),
+                   lat = c(47.01151109725859,
+                            46.708203618730494, 
+                           46.708203618730494,
+                           47.01151109725859,
+                           47.01151109725859))
+insetMS <- ggplotGrob(g1 + geom_path(data = tempy, aes(x = long, y = lat), color="blue", size = 2) +  coord_map("polyconic") +
       theme_map() +
       theme(panel.background = element_rect(fill = 'white')))
   
 
+```
+```{r}
+
+colsites2020_filter <- colsites2020 %>% filter(long_dec > -121.73)
 ```
 
 ```{r}
@@ -81,17 +117,17 @@ library(RStoolbox)
 library(tidyverse)
 library(ggspatial)
 ggRGB(projected_raster_ms, r=1,g=2, b=3)  +  
-   geom_spatial_point(data=colsites2020, aes(long_dec,lat_dec,color='red')) +
+   geom_spatial_point(data=colsites2020_filter, aes(long_dec,lat_dec,color='red')) +
     coord_sf(crs = 4326)   +
 theme(panel.background = element_rect(colour = "black", fill="white"),
-      axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "bottom") +
+      axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none") +
 ggspatial::annotation_scale(  pad_x = unit(0.5, "mm"),pad_y = unit(0.5, "mm"),location = "bl", width_hint = 0.5)+
      ggspatial::annotation_north_arrow(location = "lr", which_north = "true", 
      pad_x = unit(0.5, "mm"),pad_y = unit(0.5, "mm"),style = ggspatial::north_arrow_fancy_orienteering) +
   labs(x="",y="", color="") +
-  scale_color_manual(values = c('red'),labels=c("sites")) +
+  scale_color_manual(values = c('red'),labels=c("Sites")) +
   annotation_custom(grob = insetMS, xmin = -121.73113, xmax = -121.7211,
                         ymin = 46.792, ymax = 46.797)
-ggsave("figs/meadow_sites.png",dpi=300, dev='png',  height=8, width=8,units="in")
+ggsave("figs/meadow_sites.png",dpi=300, dev='png',  height=8, width=5,units="in")
         
 ```
