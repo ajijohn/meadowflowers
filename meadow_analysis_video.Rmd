@@ -1,7 +1,7 @@
 ---
-title: "analysis"
+title: "analysis-video files"
 author: "Aji John"
-date: "2/25/2021"
+date: "9/27/2022"
 output: html_document
 ---
 
@@ -37,9 +37,9 @@ write_csv(results_yolo,file = 'data/results_yolo.csv')
 
 ```{r , echo=FALSE}
 library(readr)
-results_revised <- read_csv("data/results_yolo.csv", 
+results_revised <- read_csv("data/yolo-frames-videoatzerodotthree.csv", 
     col_names = TRUE)
-filtered_columns <- results_revised %>% dplyr::select ('X2','X3','X4','X5','X6','X7','X8','filename') %>% as.data.frame()
+filtered_columns <- results_revised %>% dplyr::select ('X1','X2','X3','X4','X5','X6','X7','X8','filename') %>% as.data.frame()
 ```
 
 ```{r , echo=FALSE}
@@ -59,7 +59,16 @@ colnames(species_file_count) <- c('file_name','species',"species_name")
 ```  
 
 ```{r , echo=FALSE}
-new_file_species <- merge(exif_data, species_file_count, by="file_name")
+fillong <-  list.files("data/Rawphotos-1719m-2013/",full.names = T) %>% 
+  enframe(name = NULL) %>% 
+  bind_cols(pmap_df(., file.info)) 
+
+fillong$file_name  <- fillong$value
+fillong$gps_altitude <-   1719
+```  
+
+```{r , echo=FALSE}
+new_file_species <- merge(fillong, species_file_count, by="file_name")
 ```  
 
 ```{r , echo=FALSE}
@@ -69,23 +78,15 @@ new_file_species_df <- new_file_species %>%
 ```  
 Number of flower
 ```{r , echo=FALSE}
-new_file_species_df %>% group_by(file_name, gps_altitude) %>% summarise (nos=n()) %>%ggplot(aes(gps_altitude, nos)) + geom_point() +  
+
+nofflovideo <- new_file_species_df %>%filter(! species_nname  %in%  c('NA NA','detections) NA'))  %>%  group_by(mtime) %>% summarise (nos=n()) %>%ggplot(aes(mtime, nos)) + geom_point() +  
     theme(legend.position="top", legend.title = 
               element_blank(),axis.title.x=element_blank(), 
-          axis.title.y=element_blank()) + theme_minimal(base_size = 18) +
-   labs(x='Elevation (m)' , y="# Flower species / photo",fill="Species name") +
+          axis.title.y=element_blank()) + theme_minimal(base_size = 36) +
+   labs(x='' , y="# Flower species / photo",fill="Species name") +
   theme(legend.position = "bottom")
-
-nofflo <- new_file_species_df %>% group_by(file_name, gps_altitude) %>% summarise (nos=n()) %>%ggplot(aes(gps_altitude, nos)) + geom_point( size = 5) +  
-    theme(legend.position="top", legend.title = 
-              element_blank(),axis.title.x=element_blank(), 
-          axis.title.y=element_blank()) + theme_minimal(base_size = 24) +
-   labs(x='Elevation (m)' , y="# Flower species / photo",fill="Species name") +
-  theme(legend.position = "bottom")
-
-nofflo
-ggsave("figs/species-richness.png",  width = 35, height = 25, units = "cm")
-
+nofflovideo
+ggsave("figs/species-richness-video.png",  width = 35, height = 25, units = "cm")
 ```  
 
 
@@ -132,21 +133,15 @@ new_file_species_mod_df[new_file_species_mod_df$species_nname=='Subalpine Lupine
 flowering  densities
 
 ```{r , echo=FALSE}
-new_file_species_mod_df %>% group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname), size = 5) +  
+new_file_species_mod_df %>% filter(! species_nname  %in%  c('NA NA','detections) NA'))  %>% group_by(mtime) %>%ggplot() + geom_point(aes(mtime, noofsp,color=species_nname)) +  
     theme(legend.position="top", legend.title = 
               element_blank(),axis.title.x=element_blank(), 
-          axis.title.y=element_blank()) + theme_minimal(base_size = 18) +
-   labs(x='Elevation (m)' , y="Flower density / photo",color="Species") +
+          axis.title.y=element_blank()) + theme_minimal(base_size = 36) +
+   labs(x='' , y="Flower density / photo",color="Species") +
   theme(legend.position = "bottom")
 
-fd  <- new_file_species_mod_df %>% group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname), size = 5) +  
-    theme(legend.position="top", legend.title = 
-              element_blank(),axis.title.x=element_blank(), 
-          axis.title.y=element_blank()) + theme_minimal(base_size = 24) +
-   labs(x='Elevation (m)' , y="Flower density / photo",color="Species") +
-  theme(legend.position = "bottom")
 
-ggsave("figs/species-density.png",  width = 45, height = 25, units = "cm")
+ggsave("figs/species-density-video.png",  width = 60, height = 30, units = "cm")
 ``` 
 
 ```{r }
@@ -168,15 +163,14 @@ lubridate::as_datetime(new_file_species_mod_df$datetime,format='%Y:%m:%d %H:%M:%
 daylabel  <- c("23"="August 23","27"="August 27", "30"="August 30")
 new_file_species_mod_df %>% mutate(dt= lubridate::as_datetime(datetime,format='%Y:%m:%d %H:%M:%S') ) %>%
   mutate(mnth= lubridate::month(dt),day= lubridate::day(dt)) %>%
-  group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname), size = 5) +  
+  group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname)) +  
     theme(legend.position="top", legend.title = 
               element_blank(),axis.title.x=element_blank(), 
-          axis.title.y=element_blank(),
-          panel.spacing.x=unit(3, "lines"),panel.spacing.y=unit(5, "lines")) + theme_minimal(base_size = 24) +
-  facet_wrap(.~day,labeller = labeller(day=daylabel))+
-   labs(x='Elevation (m)' ,size="", y="Flower density / photo",color="Species") +
+          axis.title.y=element_blank()) + theme_minimal(base_size = 24) +
+  facet_grid(.~day,labeller = labeller(day=daylabel))+
+   labs(x='Elevation (m)' , y="Flower density / photo",color="Species") +
   theme(legend.position = "bottom")
-ggsave("figs/species-densitytemporal.png",  width = 45, height = 25, units = "cm")
+ggsave("figs/species-densitytemporal.png",  width = 35, height = 25, units = "cm")
 ``` 
 
 
