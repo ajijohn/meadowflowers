@@ -76,7 +76,7 @@ new_file_species_df %>% group_by(file_name, gps_altitude) %>% summarise (nos=n()
    labs(x='Elevation (m)' , y="# Flower species / photo",fill="Species name") +
   theme(legend.position = "bottom")
 
-nofflo <- new_file_species_df %>% group_by(file_name, gps_altitude) %>% summarise (nos=n()) %>%ggplot(aes(gps_altitude, nos)) + geom_point( size = 5) +  
+nofflo <- new_file_species_df %>% group_by(file_name, gps_altitude) %>% summarise (nos=n()) %>%ggplot(aes(gps_altitude, nos)) + geom_point( size = 5,alpha = 0.5) +  
     theme(legend.position="top", legend.title = 
               element_blank(),axis.title.x=element_blank(), 
           axis.title.y=element_blank()) + theme_minimal(base_size = 24) +
@@ -132,14 +132,14 @@ new_file_species_mod_df[new_file_species_mod_df$species_nname=='Subalpine Lupine
 flowering  densities
 
 ```{r , echo=FALSE}
-new_file_species_mod_df %>% group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname), size = 5) +  
+new_file_species_mod_df %>% group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname), alpha = 0.5,size = 5) +  
     theme(legend.position="top", legend.title = 
               element_blank(),axis.title.x=element_blank(), 
           axis.title.y=element_blank()) + theme_minimal(base_size = 18) +
    labs(x='Elevation (m)' , y="Flower density / photo",color="Species") +
   theme(legend.position = "bottom")
 
-fd  <- new_file_species_mod_df %>% group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname), size = 5) +  
+fd  <- new_file_species_mod_df %>% group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname), alpha = 0.5,size = 5) +  
     theme(legend.position="top", legend.title = 
               element_blank(),axis.title.x=element_blank(), 
           axis.title.y=element_blank()) + theme_minimal(base_size = 24) +
@@ -294,3 +294,129 @@ new_file %>% mutate(dt = lubridate::as_date(datetime), ele= round(new_file$gps_a
   labs(x='Altitude (m)' , y="Count",color=NULL)
    
 ```  
+
+# Do it for Mask R-CNN
+
+```{r , echo=FALSE}
+predictions_mrcnn<- read_csv('./data/maskr-cnn-pred.csv')
+predictions_rnet<- read_csv('./data/retinanet-pred.csv')
+
+names(predictions_mrcnn) <- c('file_name','species_name','probability')
+names(predictions_rnet) <- c('file_name','species_name','probability')
+```
+
+
+```{r , echo=FALSE}
+new_file_species_mrcnn <- merge(exif_data, predictions_mrcnn, by="file_name")
+
+new_file_species_mrcnn %>% group_by(file_name, gps_altitude,species_name) %>% summarise (nos=n()) %>%  group_by(file_name,gps_altitude) %>% summarise (nos=n()) %>%
+  ggplot(aes(gps_altitude, nos)) + geom_point() +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 18) +
+   labs(x='Elevation (m)' , y="# Flower species / photo",fill="Species name") +
+  theme(legend.position = "bottom")
+
+noofflowmrcnn <- new_file_species_mrcnn %>% group_by(file_name, gps_altitude,species_name) %>% summarise (nos=n()) %>%  group_by(file_name,gps_altitude) %>% summarise (nos=n()) %>%
+  ggplot(aes(gps_altitude, nos)) + geom_point( alpha = 0.5,size = 5) +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 24) +
+   labs(x='Elevation (m)' , y="# Flower species / photo",fill="Species name") +
+  theme(legend.position = "bottom")
+
+fdmrcnn  <-new_file_species_mrcnn %>% group_by(file_name, gps_altitude,species_name)  %>% summarise (noofsp=n()) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_name),alpha = 0.5, size = 5) +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 24) +
+   labs(x='Elevation (m)' , y="Flower density / photo",color="Species") +
+  theme(legend.position = "bottom")
+
+```  
+
+Save for m-rcnn
+
+```{r }
+library(patchwork)
+(noofflowmrcnn  | fdmrcnn)+ plot_layout(guides = 'collect')+
+  plot_annotation(tag_levels = 'A')  &
+  theme(legend.position='bottom')
+
+ggsave("figs/combineflowerprese-mrcnn.jpg", width = 40, height = 20, units = "cm")
+
+```
+'FD by date M-RNN
+
+
+```{r , echo=FALSE}
+
+new_file_species_mrcnn %>% mutate(dt= lubridate::as_datetime(datetime,format='%Y:%m:%d %H:%M:%S') ) %>%
+  mutate(mnth= lubridate::month(dt),day= lubridate::day(dt)) %>%
+   group_by(file_name, gps_altitude,species_name,dt,mnth,day)  %>% summarise (noofsp=n()) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_name), alpha = 0.5,size = 5) +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank(),
+          panel.spacing.x=unit(3, "lines"),panel.spacing.y=unit(5, "lines")) + theme_minimal(base_size = 24) +
+  facet_wrap(.~day,labeller = labeller(day=daylabel))+
+   labs(x='Elevation (m)' ,size="", y="Flower density / photo",color="Species") +
+  theme(legend.position = "bottom")
+ggsave("figs/species-densitytemporalmrcnn.png",  width = 45, height = 25, units = "cm")
+``` 
+
+
+```{r , echo=FALSE}
+new_file_species_rnet <- merge(exif_data, predictions_rnet, by="file_name")
+
+new_file_species_rnet %>%  group_by(file_name, gps_altitude,species_name) %>% summarise (nos=n()) %>%  group_by(file_name,gps_altitude) %>% summarise (nos=n()) %>%
+  ggplot(aes(gps_altitude, nos)) + geom_point() +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 18) +
+   labs(x='Elevation (m)' , y="# Flower species / photo",fill="Species name") +
+  theme(legend.position = "bottom")
+
+
+noofflowrnet<- new_file_species_rnet %>% group_by(file_name, gps_altitude,species_name) %>% summarise (nos=n()) %>%  group_by(file_name,gps_altitude) %>% summarise (nos=n()) %>%
+  ggplot(aes(gps_altitude, nos)) + geom_point(alpha = 0.5, size = 5) +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 24) +
+   labs(x='Elevation (m)' , y="# Flower species / photo",fill="Species name") +
+  theme(legend.position = "bottom")
+
+fdrnet <-new_file_species_rnet %>% group_by(file_name, gps_altitude,species_name)  %>% summarise (noofsp=n()) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_name), alpha = 0.5,size = 5) +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank()) + theme_minimal(base_size = 24) +
+   labs(x='Elevation (m)' , y="Flower density / photo",color="Species") +
+  theme(legend.position = "bottom")
+```  
+Save for r-net
+
+```{r }
+library(patchwork)
+(noofflowrnet  | fdrnet)+ plot_layout(guides = 'collect')+
+  plot_annotation(tag_levels = 'A')  &
+  theme(legend.position='bottom')
+
+ggsave("figs/combineflowerprese-rnet.jpg", width = 40, height = 20, units = "cm")
+
+```
+
+'FD by date R-Net
+
+
+```{r , echo=FALSE}
+
+new_file_species_rnet %>% mutate(dt= lubridate::as_datetime(datetime,format='%Y:%m:%d %H:%M:%S') ) %>%
+  mutate(mnth= lubridate::month(dt),day= lubridate::day(dt)) %>%
+   group_by(file_name, gps_altitude,species_name,dt,mnth,day)  %>% summarise (noofsp=n()) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_name), alpha = 0.5,size = 5) +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank(),
+          panel.spacing.x=unit(3, "lines"),panel.spacing.y=unit(5, "lines")) + theme_minimal(base_size = 24) +
+  facet_wrap(.~day,labeller = labeller(day=daylabel))+
+   labs(x='Elevation (m)' ,size="", y="Flower density / photo",color="Species") +
+  theme(legend.position = "bottom")
+ggsave("figs/species-densitytemporalrnet.png",  width = 45, height = 25, units = "cm")
+``` 
