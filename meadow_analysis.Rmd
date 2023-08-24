@@ -445,12 +445,32 @@ library(psych)
 pairs.panels(dfnoofsmethods[1:3])  # select columns 1-3
 ```
 ```{r , echo=FALSE}
-
+COR <- rcnnandyoloandrnetbycommon[c('nosyolo',
+                                       'nosmrcnn',
+                                       'nosrnet')]
+names(COR) <- c('Yolo-# of Species',
+                                       'M-RCNN-# of Species',
+                                       'RetinaNet-# of Species')
 library(psych)
 pairs.panels(rcnnandyoloandrnetbycommon[c('nosyolo',
                                        'nosmrcnn',
                                        'nosrnet')])  # select three
 ```
+
+```{r , echo=FALSE}
+
+library(psych)
+pairs.panels(COR)  # select three
+```
+
+```{r , echo=FALSE}
+
+library(psych)
+library(PerformanceAnalytics)
+
+chart.Correlation(COR)  # select three
+```
+
 ```{r , echo=FALSE}
 
 library(PerformanceAnalytics)
