@@ -419,4 +419,41 @@ new_file_species_rnet %>% mutate(dt= lubridate::as_datetime(datetime,format='%Y:
    labs(x='Elevation (m)' ,size="", y="Flower density / photo",color="Species") +
   theme(legend.position = "bottom")
 ggsave("figs/species-densitytemporalrnet.png",  width = 45, height = 25, units = "cm")
-``` 
+```
+
+
+
+
+Do a R2 test
+```{r , echo=FALSE}
+noffrnet <- new_file_species_rnet %>% group_by(file_name, gps_altitude,species_name) %>% summarise (nos=n()) %>%  group_by(file_name,gps_altitude) %>% summarise (nos=n()) %>% as.data.frame()
+noffmrcnn <- new_file_species_mrcnn %>% group_by(file_name, gps_altitude,species_name) %>% summarise (nos=n()) %>%  group_by(file_name,gps_altitude) %>% summarise (nos=n()) %>% as.data.frame()
+noffyolo<-  new_file_species_df %>% group_by(file_name, gps_altitude) %>% summarise (nos=n()) %>% as.data.frame()
+
+rcnnandyoloandrnetbycommon <- merge(noffyolo,noffmrcnn,by='file_name')
+names(rcnnandyoloandrnetbycommon) <- c('file_name','gps_altitude_yolo','nosyolo','gps_altitude_mrcnn','nosmrcnn')
+rcnnandyoloandrnetbycommon <- merge(rcnnandyoloandrnetbycommon,noffrnet,by='file_name')
+names(rcnnandyoloandrnetbycommon) <- c('file_name','gps_altitude_yolo','nosyolo',
+                                       'gps_altitude_mrcnn','nosmrcnn',
+                                       'gps_altitude_rnet','nosrnet')
+
+rcnnandyoloandrnet <- cbind(noffmrcnn$nos,noffyolo$nos,noffrnet$nos)
+dfnoofsmethods <- as.data.frame(rcnnandyoloandrnet)
+names(dfnoofsmethods) <- c('noofspsmrcnn','noofspsyolo','noofspsrnet')
+
+library(psych)
+pairs.panels(dfnoofsmethods[1:3])  # select columns 1-3
+```
+```{r , echo=FALSE}
+
+library(psych)
+pairs.panels(rcnnandyoloandrnetbycommon[c('nosyolo',
+                                       'nosmrcnn',
+                                       'nosrnet')])  # select three
+```
+
+```{r , echo=FALSE}
+library(PerformanceAnalytics)
+chart.Correlation(dfnoofsmethods[1:3])
+
+```
