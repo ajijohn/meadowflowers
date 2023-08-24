@@ -451,6 +451,13 @@ pairs.panels(rcnnandyoloandrnetbycommon[c('nosyolo',
                                        'nosmrcnn',
                                        'nosrnet')])  # select three
 ```
+```{r , echo=FALSE}
+
+library(PerformanceAnalytics)
+chart.Correlation(rcnnandyoloandrnetbycommon[c('nosyolo',
+                                       'nosmrcnn',
+                                       'nosrnet')])  # select three
+```
 
 ```{r , echo=FALSE}
 library(PerformanceAnalytics)
