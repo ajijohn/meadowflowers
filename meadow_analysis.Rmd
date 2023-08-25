@@ -179,7 +179,7 @@ new_file_species_mod_df %>% mutate(dt= lubridate::as_datetime(datetime,format='%
 
 temporal_yolo <- new_file_species_mod_df %>% mutate(dt= lubridate::as_datetime(datetime,format='%Y:%m:%d %H:%M:%S') ) %>%
   mutate(mnth= lubridate::month(dt),day= lubridate::day(dt)) %>%
-  group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname), size = 5) +  
+  group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname), alpha = 0.5,size = 5) +  
     theme(legend.position="top", legend.title = 
               element_blank(),axis.title.x=element_blank(), 
           axis.title.y=element_blank(),
@@ -488,7 +488,7 @@ library(patchwork)
 ((temporalmrcnn )/(temporal_yolo)/ (temporalrnet))+ plot_layout()+
   plot_annotation(tag_levels = 'A')  + theme(legend.position = 'bottom')
 
-ggsave("figs/combinedateesprese-allthhree.jpg", width = 75, height = 40, units = "cm")
+ggsave("figs/combinedateesprese-allthhree.jpg", width = 52, height = 40, units = "cm")
 
 ```
 
@@ -539,6 +539,7 @@ library(psych)
 library(PerformanceAnalytics)
 
 chart.Correlation(COR)  # select three
+dev.copy(png,"figs/coraugspecies.jpg",width = 750, height = 500,)
 ```
 
 ```{r , echo=FALSE}
@@ -800,7 +801,7 @@ sdiAll <- merge(sdiAll,sdirnetwithsource,by="file_name")
 colssdi <- c("Mask R-CNN" = "darkred", "YOLO" = "steelblue", "RetinaNet" = "darkgreen")
 
 library(ggpubr)
-sdiAll <- sdiAll %>% ggplot(aes(x=sdi)) + 
+sdiAllplot <- sdiAll %>% ggplot(aes(x=sdi)) + 
   geom_point(aes(y = sdimrcnn, color = "Mask R-CNN") ,alpha = 1/5) + 
   geom_smooth(aes(y = sdimrcnn,color = "Mask R-CNN"), method="lm") + 
    stat_cor(aes(y = sdimrcnn,color = "Mask R-CNN") , label.x = 1.2, label.y = c(0.6), size = 5, show.legend = F) +
@@ -815,7 +816,7 @@ sdiAll <- sdiAll %>% ggplot(aes(x=sdi)) +
    guides(color=guide_legend(override.aes=list(fill=NA))) +
   labs(color="Method",y="", x="Shannon diversity index (labelled)")+
 scale_colour_manual(values = colssdi)
-sdiAll
+sdiAllplot
 ggsave("figs/sdicompared-dommetrics.jpg", width = 25, height = 20, units = "cm")
 ```
 
@@ -845,19 +846,65 @@ richAlleval <- richnessAll %>% ggplot(aes(x=anotot)) +
    guides(color=guide_legend(override.aes=list(fill=NA))) +
   labs(color="Method",y="", x="Species Richness (labelled)")+
 scale_colour_manual(values = colssdi)
+
+
+
 richAlleval
 
 ggsave("figs/richnesscompared-dommetrics.jpg", width = 25, height = 20, units = "cm")
 ```
 
+```{r }
+sdiAllevaltwo <- sdiAll %>% ggplot(aes(x=sdimrcnn)) + 
+  geom_point(aes(y = sdiyolo ) , color = "darkblue", alpha = 1/5) + 
+  geom_smooth(aes(y = sdiyolo), color = "darkblue", method="lm") + 
+   stat_cor(aes(y = sdiyolo) ,color = "darkblue",label.x = 1, label.y = c(3), size = 5, show.legend = F) +
+  theme_minimal(base_size = 24) +
+  theme(legend.position = "bottom",legend.key=element_blank()) +
+   guides(color=guide_legend(override.aes=list(fill=NA))) +
+  labs(y="Shannon diversity index - YOLO", x="Shannon diversity index - Mask R-CNN")
+ggsave("figs/sdicompared-dommetricstwo.jpg", width = 25, height = 20, units = "cm")
 
+```
+
+```{r }
+richAllevaltwo <- richnessAll %>% ggplot(aes(x=totmrcnn)) + 
+  geom_point(aes(y = totyolo ) , color = "darkblue", alpha = 1/5) + 
+  geom_smooth(aes(y = totyolo), color = "darkblue", method="lm") + 
+   stat_cor(aes(y = totyolo) ,color = "darkblue",label.x = 4, label.y = c(60), size = 5, show.legend = F) +
+  theme_minimal(base_size = 24) +
+  theme(legend.position = "bottom",legend.key=element_blank()) +
+   guides(color=guide_legend(override.aes=list(fill=NA))) +
+  labs(y="Species Richness - YOLO", x="Species Richness - Mask R-CNN")
+ggsave("figs/richnesscompared-dommetricstwo.jpg", width = 25, height = 20, units = "cm")
+
+```
 
 ```{r }
 library(patchwork)
-(sdiAll  | richAlleval)+ plot_layout(guides = 'collect')+
+(sdiAllevaltwo  | richAllevaltwo)+ plot_layout(guides = 'collect')+
+  plot_annotation(tag_levels = 'A')  &
+  theme(legend.position='bottom')
+
+ggsave("figs/combineeval-richanddiversity-twomethods.jpg", width = 40, height = 20, units = "cm")
+```
+
+```{r }
+library(patchwork)
+(sdiAllplot  | richAlleval)+ plot_layout(guides = 'collect')+
   plot_annotation(tag_levels = 'A')  &
   theme(legend.position='bottom')
 
 ggsave("figs/combineeval-richanddiversity.jpg", width = 40, height = 20, units = "cm")
+
+```
+
+```{r }
+library(patchwork)
+((sdiAllplot  | richAlleval)/(sdiAllevaltwo  | richAllevaltwo))+ plot_layout(guides = 'collect')+
+  plot_annotation(tag_levels = 'A')  &
+  theme(legend.position='bottom')
+
+ggsave("figs/combineeval-richanddiversity-both.jpg", width = 40, height = 40, units = "cm")
 
 ```
