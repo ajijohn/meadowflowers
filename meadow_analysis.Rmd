@@ -534,14 +534,62 @@ fanotdf <- annotations_eval %>% separate(file_name, c("fname","stub"), sep = "\\
 totandspec <- merge(fanotdf,totalabundspecies,by="file_name")
 ```
 
-
+Diversity done by the species
 
 ```{r , echo=FALSE}
 
 
-totandspec %>% mutate(prop = abundance/tot) %>%
+annotateddiversity <- totandspec %>% mutate(prop = abundance/tot) %>%
      mutate(logprop = log(prop)) %>%
      group_by(file_name) %>%
-     summarize(sdi= sum(-1*prop*logprop))
+     summarize(sdi= sum(-1*prop*logprop)) %>% as.data.frame()
 ```
 
+Lets do that on predictions for Yolo
+
+
+```{r , echo=FALSE}
+totalabundspeciesyolo <-  predictions_yolo_eval %>% 
+  group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
+  group_by(file_name)  %>% summarise (tot=sum(noofsp)) %>% 
+  as.data.frame()
+
+```
+
+```{r , echo=FALSE}
+totalabundspeciesyolo <-  predictions_yolo_eval %>% 
+  group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
+  group_by(file_name)  %>% summarise (tot=sum(noofsp)) %>% 
+  as.data.frame()
+
+splevelabund <- predictions_yolo_eval %>% 
+  group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
+  as.data.frame()
+
+totandspecyolo <- merge(splevelabund,totalabundspeciesyolo,by="file_name")
+```
+
+SDI for YOLO
+
+
+```{r , echo=FALSE}
+predicteddiversityyolo <- totandspecyolo %>% mutate(prop = noofsp/tot) %>%
+     mutate(logprop = log(prop)) %>%
+     group_by(file_name) %>%
+     summarize(sdi= sum(-1*prop*logprop)) %>% as.data.frame()
+
+names(predicteddiversityyolo) <- c('file_name','sdiyolo')
+```
+
+
+Compare
+```{r , echo=FALSE}
+sdiyolowithsource <- merge(annotateddiversity,predicteddiversityyolo,by="file_name")
+```
+SDI - correlation
+
+```{r , echo=FALSE}
+library(PerformanceAnalytics)
+chart.Correlation(sdiyolowithsource[2:3])
+
+```
