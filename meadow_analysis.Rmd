@@ -176,6 +176,24 @@ new_file_species_mod_df %>% mutate(dt= lubridate::as_datetime(datetime,format='%
   facet_wrap(.~day,labeller = labeller(day=daylabel))+
    labs(x='Elevation (m)' ,size="", y="Flower density / photo",color="Species") +
   theme(legend.position = "bottom")
+
+temporal_yolo <- new_file_species_mod_df %>% mutate(dt= lubridate::as_datetime(datetime,format='%Y:%m:%d %H:%M:%S') ) %>%
+  mutate(mnth= lubridate::month(dt),day= lubridate::day(dt)) %>%
+  group_by(file_name, gps_altitude) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_nname), size = 5) +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank(),
+          panel.spacing.x=unit(3, "lines"),panel.spacing.y=unit(5, "lines")) + theme_minimal(base_size = 24) +
+  facet_wrap(.~day,labeller = labeller(day=daylabel))+
+   labs(x='Elevation (m)' ,size="", y="Flower density / photo",color="Species") +
+  theme(legend.position = "none")+
+   theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+theme(
+  strip.background = element_blank(),
+  strip.text.x = element_blank()
+)
 ggsave("figs/species-densitytemporal.png",  width = 45, height = 25, units = "cm")
 ``` 
 
@@ -360,6 +378,22 @@ new_file_species_mrcnn %>% mutate(dt= lubridate::as_datetime(datetime,format='%Y
   facet_wrap(.~day,labeller = labeller(day=daylabel))+
    labs(x='Elevation (m)' ,size="", y="Flower density / photo",color="Species") +
   theme(legend.position = "bottom")
+
+
+temporalmrcnn <- new_file_species_mrcnn %>% mutate(dt= lubridate::as_datetime(datetime,format='%Y:%m:%d %H:%M:%S') ) %>%
+  mutate(mnth= lubridate::month(dt),day= lubridate::day(dt)) %>%
+   group_by(file_name, gps_altitude,species_name,dt,mnth,day)  %>% summarise (noofsp=n()) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_name), alpha = 0.5,size = 5) +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank(),
+          panel.spacing.x=unit(3, "lines"),panel.spacing.y=unit(5, "lines")) + theme_minimal(base_size = 24) +
+  facet_wrap(.~day,labeller = labeller(day=daylabel))+
+   labs(x='Elevation (m)' ,size="", y="Flower density / photo",color="Species") +
+  theme(legend.position = "none") +
+   theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
 ggsave("figs/species-densitytemporalmrcnn.png",  width = 45, height = 25, units = "cm")
 ``` 
 
@@ -418,9 +452,24 @@ new_file_species_rnet %>% mutate(dt= lubridate::as_datetime(datetime,format='%Y:
   facet_wrap(.~day,labeller = labeller(day=daylabel))+
    labs(x='Elevation (m)' ,size="", y="Flower density / photo",color="Species") +
   theme(legend.position = "bottom")
+
+temporalrnet <- new_file_species_rnet %>% mutate(dt= lubridate::as_datetime(datetime,format='%Y:%m:%d %H:%M:%S') ) %>%
+  mutate(mnth= lubridate::month(dt),day= lubridate::day(dt)) %>%
+   group_by(file_name, gps_altitude,species_name,dt,mnth,day)  %>% summarise (noofsp=n()) %>%ggplot() + geom_point(aes(gps_altitude, noofsp,color=species_name), alpha = 0.5,size = 5) +  
+    theme(legend.position="top", legend.title = 
+              element_blank(),axis.title.x=element_blank(), 
+          axis.title.y=element_blank(),
+          panel.spacing.x=unit(3, "lines"),panel.spacing.y=unit(5, "lines")) + theme_minimal(base_size = 24) +
+  facet_wrap(.~day,labeller = labeller(day=daylabel))+
+   labs(x='Elevation (m)' ,size="", y="Flower density / photo",color="Species") +
+  theme(legend.position = "bottom")+
+theme(
+  strip.background = element_blank(),
+  strip.text.x = element_blank()
+)
 ggsave("figs/species-densitytemporalrnet.png",  width = 45, height = 25, units = "cm")
 ```
-## Ciombine the plots
+## Ciombine the plots noofflowers and density
 
 ```{r }
 library(patchwork)
@@ -431,6 +480,17 @@ ggsave("figs/combineflowerprese-all three.jpg", width = 75, height = 40, units =
 
 ```
 
+
+## Ciombine the plots by August date
+
+```{r }
+library(patchwork)
+((temporalmrcnn )/(temporal_yolo)/ (temporalrnet))+ plot_layout()+
+  plot_annotation(tag_levels = 'A')  + theme(legend.position = 'bottom')
+
+ggsave("figs/combinedateesprese-allthhree.jpg", width = 75, height = 40, units = "cm")
+
+```
 
 
 
