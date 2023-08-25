@@ -593,3 +593,135 @@ library(PerformanceAnalytics)
 chart.Correlation(sdiyolowithsource[2:3])
 
 ```
+SDI for Mask R-CNN
+
+```{r , echo=FALSE}
+
+predictions_mrcnn_eval<- read_csv('./data/mrcnnevalpred.csv')
+
+
+names(predictions_mrcnn_eval) <- c('file_name','species_name','probability')
+
+```
+
+
+Lets do that on predictions for MR-CNN
+
+
+```{r , echo=FALSE}
+totalabundspeciesmrcnn <-  predictions_mrcnn_eval %>% 
+  group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
+  group_by(file_name)  %>% summarise (tot=sum(noofsp)) %>% 
+  as.data.frame()
+
+```
+
+```{r , echo=FALSE}
+totalabundspeciesmrcnn <-  predictions_mrcnn_eval %>% 
+  group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
+  group_by(file_name)  %>% summarise (tot=sum(noofsp)) %>% 
+  as.data.frame()
+
+splevelabundmrcnn <- predictions_mrcnn_eval %>% 
+  group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
+  as.data.frame()
+
+totandspecmrcnn <- merge(splevelabundmrcnn,totalabundspeciesmrcnn,by="file_name")
+```
+
+SDI for MRCNN
+
+
+```{r , echo=FALSE}
+predicteddiversitymrcnn <- totandspecmrcnn %>% mutate(prop = noofsp/tot) %>%
+     mutate(logprop = log(prop)) %>%
+     group_by(file_name) %>%
+     summarize(sdi= sum(-1*prop*logprop)) %>% as.data.frame()
+
+names(predicteddiversitymrcnn) <- c('file_name','sdimrcnn')
+```
+
+
+Compare
+```{r , echo=FALSE}
+sdimrcnnwithsource <- merge(annotateddiversity,predicteddiversitymrcnn,by="file_name")
+```
+SDI - correlation with source
+
+```{r , echo=FALSE}
+library(PerformanceAnalytics)
+chart.Correlation(sdimrcnnwithsource[2:3])
+
+```
+
+
+
+SDI for RetinaNet
+
+```{r , echo=FALSE}
+
+predictions_rnet_eval<- read_csv('./data/rnetevalpred.csv')
+
+
+names(predictions_rnet_eval) <- c('file_name','species_name','probability')
+
+```
+
+
+Lets do that on predictions for RNet
+
+
+```{r , echo=FALSE}
+totalabundspeciesrnet<-  predictions_rnet_eval %>% 
+  group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
+  group_by(file_name)  %>% summarise (tot=sum(noofsp)) %>% 
+  as.data.frame()
+
+```
+
+```{r , echo=FALSE}
+totalabundspeciesrnet <-  predictions_rnet_eval %>% 
+  group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
+  group_by(file_name)  %>% summarise (tot=sum(noofsp)) %>% 
+  as.data.frame()
+
+splevelabundrnet <- predictions_rnet_eval %>% 
+  group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
+  as.data.frame()
+
+totandspecrnet <- merge(splevelabundrnet,totalabundspeciesrnet,by="file_name")
+```
+
+SDI for RNet
+
+
+```{r , echo=FALSE}
+predicteddiversityrnet <- totandspecrnet %>% mutate(prop = noofsp/tot) %>%
+     mutate(logprop = log(prop)) %>%
+     group_by(file_name) %>%
+     summarize(sdi= sum(-1*prop*logprop)) %>% as.data.frame()
+
+names(predicteddiversityrnet) <- c('file_name','sdirnet')
+```
+
+
+Compare
+```{r , echo=FALSE}
+sdirnetwithsource <- merge(annotateddiversity,predicteddiversityrnet,by="file_name")
+```
+SDI - correlation with source
+
+```{r , echo=FALSE}
+library(PerformanceAnalytics)
+chart.Correlation(sdirnetwithsource[2:3])
+
+```
+
+
+Richness plot for all the three methods
+- We created a set of 7000 slices for validation 
+
+```{r , echo=FALSE}
+
+
+```
