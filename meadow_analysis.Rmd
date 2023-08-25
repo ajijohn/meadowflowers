@@ -484,3 +484,64 @@ library(PerformanceAnalytics)
 chart.Correlation(dfnoofsmethods[1:3])
 
 ```
+
+
+
+Calculate richness and diversity
+```{r , echo=FALSE}
+
+predictions_yolo_eval<- read_csv('./data/yoloevalpred.csv')
+annotations_eval<- read_csv('./data/annotated-valset.csv')
+
+names(predictions_yolo_eval) <- c('file_name','species_name','probability')
+names(annotations_eval) <- c('file_name','species_name','abundance','probability')
+```
+
+```{r , echo=FALSE}
+
+predyolosprichness<- predictions_yolo_eval %>% group_by(file_name,species_name) %>% summarise (nos=n()) %>% group_by(file_name) %>% summarise (yolonos=n()) %>% as.data.frame()
+
+sprichness<- annotations_eval %>% separate(file_name, c("fname","stub"), sep = "\\.") %>% 
+  mutate(file_name=paste0(fname,".jpg")) %>% select(file_name,species_name,abundance,probability) %>%  group_by(file_name,species_name) %>% summarise (nos=n()) %>% group_by(file_name) %>% summarise (nos=n()) %>% as.data.frame()
+
+richnessyolobycommon <- merge(sprichness,predyolosprichness,by='file_name')
+
+
+chart.Correlation(richnessyolobycommon[2:3])
+```
+
+Richness plot - correlation
+
+```{r , echo=FALSE}
+library(PerformanceAnalytics)
+chart.Correlation(richnessyolobycommon[2:3])
+
+```
+
+Plot diversity shannon
+
+```{r , echo=FALSE}
+totalabundspecies <- annotations_eval %>% separate(file_name, c("fname","stub"), sep = "\\.") %>% 
+  mutate(file_name=paste0(fname,".jpg")) %>% group_by(file_name)  %>% summarize(tot=sum(abundance)) %>% as.data.frame()
+
+```
+
+```{r , echo=FALSE}
+fanotdf <- annotations_eval %>% separate(file_name, c("fname","stub"), sep = "\\.") %>% 
+  mutate(file_name=paste0(fname,".jpg")) %>% select(file_name,species_name,abundance,probability) %>% 
+  as.data.frame()
+
+totandspec <- merge(fanotdf,totalabundspecies,by="file_name")
+```
+
+
+
+```{r , echo=FALSE}
+
+
+totandspec %>% mutate(prop = abundance/tot) %>%
+     mutate(logprop = log(prop)) %>%
+     group_by(file_name) %>%
+     summarize(sdi= sum(-1*prop*logprop))
+```
+
