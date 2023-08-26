@@ -33,6 +33,7 @@ library(ceramic)
 roi <- raster::extent(-121.73088,-121.71093,46.77072 , 46.79736)
 #im <- cc_location(roi,buffer = 5000)
 im <- cc_location(roi,buffer = 1e11)
+imel <- cc_elevation(roi,buffer = 1e11)
 
 #> Preparing to download: 16 tiles at zoom = 4 from 
 #> https://api.mapbox.com/v4/mapbox.satellite/
@@ -43,6 +44,7 @@ crs<-"+proj=longlat +datum=WGS84"
 
 # Project Raster
 projected_raster_ms <- raster::projectRaster(im, crs = crs)
+projected_raster_ms_el <- raster::projectRaster(imel, crs = crs)
 
 ```
 
@@ -229,6 +231,18 @@ theme(panel.background = element_rect(colour = "black", fill="white"),
     labs(x="",y="", color="") +
   scale_color_manual(values = c('red'),labels=c("Sites")) 
 
+p1el = ggR(projected_raster_ms_el)  +  
+   geom_spatial_point(data=colsites2020_filter, aes(long_dec,lat_dec,alpha=0.5,color='red')) +
+    coord_sf(crs = 4326)   +
+theme(panel.background = element_rect(colour = "black", fill="white"),
+      axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none") +
+ annotation_scale(location = "bl", width_hint = 0.4) +
+    annotation_north_arrow(location = "bl", which_north = "true", 
+        pad_x = unit(0.1, "in"), pad_y = unit(0.5, "in"),
+        style = north_arrow_fancy_orienteering) +
+    labs(x="",y="", color="") +
+  scale_color_manual(values = c('red'),labels=c("Sites")) 
+
  ggplot() +
  coord_equal(xlim = c(0, 30), ylim = c(0, 30), expand = FALSE) +
 
@@ -243,3 +257,20 @@ theme(panel.background = element_rect(colour = "black", fill="white"),
 ggsave("figs/meadow_sites_r2.png",dpi=300, dev='png',  height=10, width=8,units="in")
         
 ```
+
+```{r}
+
+p1el = ggR(projected_raster_ms_el)  +  
+   geom_spatial_point(data=colsites2020_filter, aes(long_dec,lat_dec,alpha=0.5,color='red')) +
+    coord_sf(crs = 4326)   +
+theme(panel.background = element_rect(colour = "black", fill="white"),
+      axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none") +
+ annotation_scale(location = "bl", width_hint = 0.4) +
+    annotation_north_arrow(location = "bl", which_north = "true", 
+        pad_x = unit(0.1, "in"), pad_y = unit(0.5, "in"),
+        style = north_arrow_fancy_orienteering) +
+    labs(x="",y="", color="") +
+  scale_color_manual(values = c('red'),labels=c("Sites")) 
+ggsave("figs/elevsite.png",dpi=300, dev='png',  height=10, width=8,units="in")
+```  
+  
