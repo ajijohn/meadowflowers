@@ -840,7 +840,7 @@ richAlleval <- richnessAll %>% ggplot(aes(x=anotot)) +
      stat_cor(aes(y = totyolo,color = "YOLO") , label.x = 4, label.y = c(56), size = 5, show.legend = F) +
   geom_point(aes(y = totrnet,color="RetinaNet"), shape=20,alpha = 1/5) +
   geom_smooth(aes(y = totrnet,color="RetinaNet"), method="lm") +
-     stat_cor(aes(y = totrnet,color = "RetinaNet") , label.x = 4, label.y = c(52), size = 5, show.legend = F) +
+     stat_cor(aes(y = totrnet,color = "RetinaNet") , label.x = 4, label.y = c(52), size = 5, show.legend = F, r.digits = 4) +
   theme_minimal(base_size = 24) +
   theme(legend.position = "bottom",legend.key=element_blank()) +
    guides(color=guide_legend(override.aes=list(fill=NA))) +
@@ -901,7 +901,8 @@ ggsave("figs/combineeval-richanddiversity.jpg", width = 40, height = 20, units =
 
 ```{r }
 library(patchwork)
-((sdiAllplot  | richAlleval)/(sdiAllevaltwo  | richAllevaltwo))+ plot_layout(guides = 'collect')+
+((sdiAllplot  | richAlleval)/(sdiAllevaltwo  | richAllevaltwo))+ plot_layout(
+  )+
   plot_annotation(tag_levels = 'A')  &
   theme(legend.position='bottom')
 
