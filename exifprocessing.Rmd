@@ -31,9 +31,10 @@ meadowSites
 library(ceramic)
 
 roi <- raster::extent(-121.73088,-121.71093,46.77072 , 46.79736)
+roi2 <- raster::extent(-121.73088,-121.70093,46.76072 , 46.80736)
 #im <- cc_location(roi,buffer = 5000)
-im <- cc_location(roi,buffer = 1e11)
-imel <- cc_elevation(roi,buffer = 1e11)
+im <- cc_location(roi2,buffer = 1e11)
+imel <- cc_elevation(roi2,buffer = 1e11)
 
 #> Preparing to download: 16 tiles at zoom = 4 from 
 #> https://api.mapbox.com/v4/mapbox.satellite/
@@ -211,6 +212,27 @@ ggsave("figs/meadow_sites_r1.png",dpi=200, dev='png',  height=6, width=6,units="
         
 ```
 
+Revised plot 3 11/9/2023
+
+```{r}
+library(rasterVis)
+library(RStoolbox)
+library(tidyverse)
+library(ggspatial)
+ggRGB(projected_raster_ms, r=1,g=2, b=3)  +  
+   geom_spatial_point(data=colsites2020_filter, aes(long_dec,lat_dec,alpha=0.5,color='red')) +
+    coord_sf(crs = 4326, expand = TRUE)   +
+theme(panel.background = element_rect(colour = "black", fill="white"),
+      axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none") +
+ annotation_scale(location = "bl", width_hint = 0.4) +
+    annotation_north_arrow(location = "bl", which_north = "true", 
+        pad_x = unit(0.1, "in"), pad_y = unit(0.5, "in"),
+        style = north_arrow_fancy_orienteering) +
+    labs(x="",y="", color="") +
+  scale_color_manual(values = c('red'),labels=c("Sites")) 
+ggsave("figs/meadow_sites_r_final.png",dpi=200, dev='png',  height=6, width=6,units="in")
+        
+```
 
 Revised plot 3
 
