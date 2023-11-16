@@ -481,7 +481,7 @@ ggsave("figs/combineflowerprese-all three.jpg", width = 75, height = 40, units =
 ```
 
 
-## Ciombine the plots by August date
+## Combine the plots by August date
 
 ```{r }
 library(patchwork)
@@ -525,6 +525,54 @@ library(psych)
 pairs.panels(rcnnandyoloandrnetbycommon[c('nosyolo',
                                        'nosmrcnn',
                                        'nosrnet')])  # select three
+```
+```{r , echo=FALSE}
+library(psych)
+pairs.panels(rcnnandyoloandrnetbycommon[c('gps_altitude_yolo','nosyolo')]) 
+
+library(segmented)
+
+#fit simple linear regression model
+fityolo <- lm(nosyolo ~ gps_altitude_yolo, data=rcnnandyoloandrnetbycommon)
+
+#fit piecewise regression model to original model, estimating a breakpoint at x=9
+segmented.fit.yolo <- segmented(fityolo, seg.Z = ~gps_altitude_yolo)
+
+#view summary of segmented model
+summary(segmented.fit.yolo)
+```
+
+
+```{r , echo=FALSE}
+library(psych)
+pairs.panels(rcnnandyoloandrnetbycommon[c('gps_altitude_mrcnn','nosmrcnn')]) 
+
+library(segmented)
+
+#fit simple linear regression model
+fitymrcnn <- lm(nosmrcnn ~ gps_altitude_mrcnn, data=rcnnandyoloandrnetbycommon)
+
+#fit piecewise regression model to original model, estimating a breakpoint at x=9
+segmented.fit.mrcnn <- segmented(fitymrcnn, seg.Z = ~gps_altitude_mrcnn)
+
+#view summary of segmented model
+summary(segmented.fit.mrcnn)
+```
+
+```{r , echo=FALSE}
+library(psych)
+pairs.panels(rcnnandyoloandrnetbycommon[c('gps_altitude_rnet','nosrnet')]) 
+
+library(segmented)
+
+#fit simple linear regression model
+fityrnet <- lm(nosrnet ~ gps_altitude_rnet, data=rcnnandyoloandrnetbycommon)
+
+#fit piecewise regression model to original model, estimating a breakpoint at x=9
+segmented.fitrnet <- segmented(fityrnet, seg.Z = ~gps_altitude_rnet)
+
+#view summary of segmented model
+summary(segmented.fitrnet)
 ```
 
 ```{r , echo=FALSE}
