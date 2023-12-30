@@ -621,7 +621,7 @@ names(annotations_eval) <- c('file_name','species_name','abundance','probability
 predyolosprichness<- predictions_yolo_eval %>% group_by(file_name,species_name) %>% summarise (nos=n()) %>% group_by(file_name) %>% summarise (yolonos=n()) %>% as.data.frame()
 
 sprichness<- annotations_eval %>% separate(file_name, c("fname","stub"), sep = "\\.") %>% 
-  mutate(file_name=paste0(fname,".jpg")) %>% select(file_name,species_name,abundance,probability) %>%  group_by(file_name,species_name) %>% summarise (nos=n()) %>% group_by(file_name) %>% summarise (nos=n()) %>% as.data.frame()
+  mutate(file_name=paste0(fname,".jpg")) %>% dplyr::select(file_name,species_name,abundance,probability) %>%  group_by(file_name,species_name) %>% summarise (nos=n()) %>% group_by(file_name) %>% summarise (nos=n()) %>% as.data.frame()
 
 richnessyolobycommon <- merge(sprichness,predyolosprichness,by='file_name')
 
@@ -647,7 +647,7 @@ totalabundspecies <- annotations_eval %>% separate(file_name, c("fname","stub"),
 
 ```{r , echo=FALSE}
 fanotdf <- annotations_eval %>% separate(file_name, c("fname","stub"), sep = "\\.") %>% 
-  mutate(file_name=paste0(fname,".jpg")) %>% select(file_name,species_name,abundance,probability) %>% 
+  mutate(file_name=paste0(fname,".jpg")) %>% dplyr::select(file_name,species_name,abundance,probability) %>% 
   as.data.frame()
 
 totandspec <- merge(fanotdf,totalabundspecies,by="file_name")
@@ -679,6 +679,11 @@ totalabundspeciesyolo <-  predictions_yolo_eval %>%
 totalabundspeciesyolo <-  predictions_yolo_eval %>% 
   group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
   group_by(file_name)  %>% summarise (tot=sum(noofsp)) %>% 
+  as.data.frame()
+
+totalrichnessspeciesyolo <-  predictions_yolo_eval %>% 
+  group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
+  group_by(file_name)  %>% summarise (tot=n()) %>% 
   as.data.frame()
 
 splevelabund <- predictions_yolo_eval %>% 
@@ -739,6 +744,11 @@ totalabundspeciesmrcnn <-  predictions_mrcnn_eval %>%
 totalabundspeciesmrcnn <-  predictions_mrcnn_eval %>% 
   group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
   group_by(file_name)  %>% summarise (tot=sum(noofsp)) %>% 
+  as.data.frame()
+
+totalrichnessspeciesmrcnn <-  predictions_mrcnn_eval %>% 
+  group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
+  group_by(file_name)  %>% summarise (tot=n()) %>% 
   as.data.frame()
 
 splevelabundmrcnn <- predictions_mrcnn_eval %>% 
@@ -802,6 +812,11 @@ totalabundspeciesrnet<-  predictions_rnet_eval %>%
 totalabundspeciesrnet <-  predictions_rnet_eval %>% 
   group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
   group_by(file_name)  %>% summarise (tot=sum(noofsp)) %>% 
+  as.data.frame()
+
+totalrechnessspeciesrnet <-  predictions_rnet_eval %>% 
+  group_by(file_name,species_name)  %>% summarise (noofsp=n()) %>% 
+  group_by(file_name)  %>% summarise (tot=n()) %>% 
   as.data.frame()
 
 splevelabundrnet <- predictions_rnet_eval %>% 
