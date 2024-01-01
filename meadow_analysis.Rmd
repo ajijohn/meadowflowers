@@ -1007,3 +1007,20 @@ library(patchwork)
 ggsave("figs/combineeval-richanddiversity-both.jpg", width = 40, height = 40, units = "cm")
 
 ```
+
+
+```{r }
+spl<- read_csv('./data/species-level-metrics.csv')
+
+spl %>% mutate(RetinaNet = as.numeric(RetinaNet), 
+               YOLO = as.numeric(YOLO)) %>%
+  pivot_longer(!Flower, names_to = "method", values_to = "AP")  %>% 
+  ggplot (aes(Flower,AP,fill=method)) + 
+  geom_bar(stat="identity",position="dodge") +
+   theme_minimal(base_size = 24) +  
+  theme(legend.position = "bottom",legend.key=element_blank(),axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+   guides(color=guide_legend(override.aes=list(fill=NA))) +
+  labs(fill="")
+ggsave("figs/ap-threemethods.jpg", width = 30, height = 25, units = "cm")
+```
+
