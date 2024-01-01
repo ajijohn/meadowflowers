@@ -228,6 +228,11 @@ ggplot()+ geom_polygon(data=AG, aes(long, lat, group = group, fill = hole), size
 
 
 ```{r}
+
+#  nudge_x = c(1, -1.5, 2, 2, -1), 
+#        nudge_y = c(0.25, -0.25, 0.5, 0.5, -0.5)
+#
+
 library("maps")
 statesp <- st_as_sf(map("state", plot = FALSE, fill = TRUE))
 head(statesp)
@@ -258,12 +263,18 @@ insetStudyArea <- ggplot(data = world) +
     coord_sf(xlim = c(-125.22580678439658, -116.4300897181524), ylim = c(45.23855657577991, 49.33136200138577), expand = FALSE) +
    geom_polygon(data=AG, aes(long, lat, group = group,fill = hole), size = 0.7) + scale_fill_manual(values = c("green")) +
     geom_text_repel(data = wacities, aes(x = lng, y = lat, label = city), 
-        fontface = "bold", nudge_x = c(1, -1.5, 2, 2, -1), nudge_y = c(0.25, 
-            -0.25, 0.5, 0.5, -0.5)) +
+        fontface = "bold", 
+   force             = 0.5,
+    nudge_x           = 0.05,
+    direction         = "y",
+    hjust             = 0,
+    segment.size      = 0.2,
+    segment.curvature = -0.1
+        ) +
           scale_fill_viridis_c(trans = "sqrt", alpha = .4) +
     annotation_scale(location = "br", width_hint = 0.4) +
-    annotation_north_arrow(location = "br", which_north = "true", 
-        pad_x = unit(0.75, "in"), pad_y = unit(0.5, "in"),
+    annotation_north_arrow(height = unit(1.00, "cm"),
+  width = unit(1.00, "cm"),  pad_x = unit(0.5, "in"),pad_y = unit(0.5, "in"), location = "br", which_north = "true", 
         style = north_arrow_fancy_orienteering) +
    theme(legend.position="none",panel.grid.major = element_line(color = gray(0.5), linetype = "dashed", 
         size = 0.5), panel.background = element_rect(fill = "aliceblue"))+
