@@ -867,13 +867,13 @@ library(ggpubr)
 sdiAllplot <- sdiAll %>% ggplot(aes(x=sdi)) + 
   geom_point(aes(y = sdimrcnn, color = "Mask R-CNN") ,alpha = 1/5) + 
   geom_smooth(aes(y = sdimrcnn,color = "Mask R-CNN"), method="lm") + 
-   stat_cor(aes(y = sdimrcnn,color = "Mask R-CNN") , label.x = 1.2, label.y = c(0.6), size = 5, show.legend = F) +
+   stat_cor(aes(y = sdimrcnn,color = "Mask R-CNN") , label.x = 1.2, label.y = c(0.6), cor.coef.name = c("r"),size = 5, show.legend = F) +
   geom_point(aes(y = sdiyolo,color="YOLO"),  shape=20,alpha = 1/5) +
   geom_smooth(aes(y = sdiyolo,color="YOLO") , method="lm") +
-     stat_cor(aes(y = sdiyolo,color = "YOLO") , label.x = 1.2, label.y = c(0.4), size = 5, show.legend = F) +
+     stat_cor(aes(y = sdiyolo,color = "YOLO") , label.x = 1.2, label.y = c(0.4), size = 5, cor.coef.name = c("r"),show.legend = F) +
   geom_point(aes(y = sdirnet,color="RetinaNet"), shape=20,alpha = 1/5) +
   geom_smooth(aes(y = sdirnet,color="RetinaNet"), method="lm") +
-     stat_cor(aes(y = sdirnet,color = "RetinaNet") , label.x = 1.2, label.y = c(0.2), size = 5, show.legend = F) +
+     stat_cor(aes(y = sdirnet,color = "RetinaNet") , label.x = 1.2, label.y = c(0.2), cor.coef.name = c("r"),size = 5, show.legend = F) +
   theme_minimal(base_size = 24) +
   theme(legend.position = "bottom",legend.key=element_blank()) +
    guides(color=guide_legend(override.aes=list(fill=NA))) +
@@ -910,7 +910,21 @@ richAlleval <- richnessAll %>% ggplot(aes(x=anotot)) +
   labs(color="Method",y="Species Richness (predicted)", x="Species Richness (labelled)")+
 scale_colour_manual(values = colssdi)
 
-
+richAllevallowerR <- richnessAll %>% ggplot(aes(x=anotot)) + 
+  geom_point(aes(y = totmrcnn, color = "Mask R-CNN") ,alpha = 1/5) + 
+  geom_smooth(aes(y = totmrcnn,color = "Mask R-CNN"), method="lm") + 
+   stat_cor(aes(y = totmrcnn,color = "Mask R-CNN") , label.x = 4, label.y = c(20), cor.coef.name = c("r"),size = 5, show.legend = F) +
+  geom_point(aes(y = totyolo,color="YOLO"),  shape=20,alpha = 1/5) +
+  geom_smooth(aes(y = totyolo,color="YOLO") , method="lm") +
+     stat_cor(aes(y = totyolo,color = "YOLO") , label.x = 4, label.y = c(18), cor.coef.name = c("r"),size = 5, show.legend = F) +
+  geom_point(aes(y = totrnet,color="RetinaNet"), shape=20,alpha = 1/5) +
+  geom_smooth(aes(y = totrnet,color="RetinaNet"), method="lm") +
+     stat_cor(aes(y = totrnet,color = "RetinaNet") , label.x = 4, label.y = c(16),cor.coef.name = c("r"), size = 5, show.legend = F, r.digits = 4) +
+  theme_minimal(base_size = 24) +
+  theme(legend.position = "bottom",legend.key=element_blank()) +
+   guides(color=guide_legend(override.aes=list(fill=NA))) +
+  labs(color="Method",y="Species Richness (predicted)", x="Species Richness (labelled)")+
+scale_colour_manual(values = colssdi)
 
 richAlleval
 
@@ -944,6 +958,22 @@ richAlleval <- richnessAll %>% ggplot(aes(x=anotot)) +
   labs(color="Method",y="Species Richness (predicted)", x="Species Richness (labelled)")+
 scale_colour_manual(values = colssdi)
 
+richAlleval <- richnessAll %>% ggplot(aes(x=anotot)) + 
+  geom_point(aes(y = totmrcnn, color = "Mask R-CNN") ,alpha = 1/5) + 
+  geom_smooth(aes(y = totmrcnn,color = "Mask R-CNN"), method="lm") + 
+   stat_cor(aes(y = totmrcnn,color = "Mask R-CNN") , label.x = 4, label.y = c(20), cor.coef.name = c("r"),size = 5, show.legend = F) +
+  geom_point(aes(y = totyolo,color="YOLO"),  shape=20,alpha = 1/5) +
+  geom_smooth(aes(y = totyolo,color="YOLO") , method="lm") +
+     stat_cor(aes(y = totyolo,color = "YOLO") , label.x = 4, label.y = c(18), cor.coef.name = c("r"),size = 5, show.legend = F) +
+  geom_point(aes(y = totrnet,color="RetinaNet"), shape=20,alpha = 1/5) +
+  geom_smooth(aes(y = totrnet,color="RetinaNet"), method="lm") +
+     stat_cor(aes(y = totrnet,color = "RetinaNet") , label.x = 4, label.y = c(16), cor.coef.name = c("r"),size = 5, show.legend = F, r.digits = 4) +
+  theme_minimal(base_size = 24) +
+  theme(legend.position = "bottom",legend.key=element_blank()) +
+   guides(color=guide_legend(override.aes=list(fill=NA))) +
+  labs(color="Method",y="Species Richness (predicted)", x="Species Richness (labelled)")+
+scale_colour_manual(values = colssdi)
+
 
 
 richAlleval
@@ -955,7 +985,7 @@ ggsave("figs/richnesscompared-dommetrics-revised.jpg", width = 25, height = 20, 
 sdiAllevaltwo <- sdiAll %>% ggplot(aes(x=sdimrcnn)) + 
   geom_point(aes(y = sdiyolo ) , color = "darkblue", alpha = 1/5) + 
   geom_smooth(aes(y = sdiyolo), color = "darkblue", method="lm") + 
-   stat_cor(aes(y = sdiyolo) ,color = "darkblue",label.x = 1, label.y = c(3), size = 5, show.legend = F) +
+   stat_cor(aes(y = sdiyolo) ,color = "darkblue",label.x = 1, label.y = c(3), cor.coef.name = c("r"),size = 5, show.legend = F) +
   theme_minimal(base_size = 24) +
   theme(legend.position = "bottom",legend.key=element_blank()) +
    guides(color=guide_legend(override.aes=list(fill=NA))) +
@@ -968,7 +998,7 @@ ggsave("figs/sdicompared-dommetricstwo.jpg", width = 25, height = 20, units = "c
 richAllevaltwo <- richnessAll %>% ggplot(aes(x=totmrcnn)) + 
   geom_point(aes(y = totyolo ) , color = "darkblue", alpha = 1/5) + 
   geom_smooth(aes(y = totyolo), color = "darkblue", method="lm") + 
-   stat_cor(aes(y = totyolo) ,color = "darkblue",label.x = 4, label.y = c(10), size = 5, show.legend = F) +
+   stat_cor(aes(y = totyolo) ,color = "darkblue",label.x = 4, label.y = c(10),cor.coef.name = c("r"), size = 5, show.legend = F) +
   theme_minimal(base_size = 24) +
   theme(legend.position = "bottom",legend.key=element_blank()) +
    guides(color=guide_legend(override.aes=list(fill=NA))) +
@@ -1012,7 +1042,7 @@ ggsave("figs/combineeval-richanddiversity-both.jpg", width = 40, height = 40, un
 ```{r }
 spl<- read_csv('./data/species-level-metrics.csv')
 
-spl %>% mutate(RetinaNet = as.numeric(RetinaNet), 
+apbyspecies <- spl %>% mutate(RetinaNet = as.numeric(RetinaNet), 
                YOLO = as.numeric(YOLO)) %>%
   pivot_longer(!Flower, names_to = "method", values_to = "AP")  %>% 
   ggplot (aes(Flower,AP,fill=method)) + 
@@ -1020,14 +1050,16 @@ spl %>% mutate(RetinaNet = as.numeric(RetinaNet),
    theme_minimal(base_size = 24) +  
   theme(legend.position = "bottom",legend.key=element_blank(),axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
    guides(color=guide_legend(override.aes=list(fill=NA))) +
-  labs(fill="")
+  labs(fill="",y="mAP50")
+apbyspecies
+
 ggsave("figs/ap-threemethods.jpg", width = 30, height = 25, units = "cm")
 ```
 
 ```{r }
 
 
-spl %>% mutate(RetinaNet = as.numeric(RetinaNet), 
+apbymethod <- spl %>% mutate(RetinaNet = as.numeric(RetinaNet), 
                YOLO = as.numeric(YOLO)) %>%
   pivot_longer(!Flower, names_to = "method", values_to = "AP")  %>% 
   group_by(method) %>%
@@ -1041,6 +1073,17 @@ spl %>% mutate(RetinaNet = as.numeric(RetinaNet),
    theme_minimal(base_size = 24) +  
   theme(legend.position = "bottom",legend.key=element_blank(),axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
    guides(color=guide_legend(override.aes=list(fill=NA))) +
-  labs(color="",fill="",x="")
+  labs(color="",fill="",x="",y="mAP50")
+apbymethod
+
 ggsave("figs/ap-threemethodsnotbyflower.jpg", width = 30, height = 25, units = "cm")
+```
+```{r }
+library(patchwork)
+(apbymethod  + apbyspecies)+ plot_layout(guides = 'collect')+
+  plot_annotation(tag_levels = 'A')  &
+  theme(legend.position='bottom')
+
+ggsave("figs/mm-byspeciesandoverall.jpg", width = 40, height = 20, units = "cm")
+
 ```
